@@ -1,78 +1,116 @@
-<!-- import aframe and then ar.js with image tracking / location based features -->
-<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
-<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+<!-- BEGIN: Top HTML -->
+<!DOCTYPE html>
+<!-- include aframe -->
+<script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+<!-- include ar.js -->
+<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script>
 
-<!-- style for the loader -->
-<style>
-  .arjs-loader {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+<!-- to load .ply model -->
+<script src="https://rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.loaders.min.js"></script>
 
-  .arjs-loader div {
-    text-align: center;
-    font-size: 1.25em;
-    color: white;
-  }
-</style>
+<!-- END: Top HTML -->
+<!-- BEGIN: Unity Compiled Events -->
+<script>
+var markerFound = 0;
+AFRAME.registerComponent('button', {
+init: function () {
+var elem = document.documentElement;
+var marker = document.querySelector("#marker");
+var fullbutton = document.querySelector("#fullscreen");
+marker.addEventListener("markerFound", function (evt) {
+markerFound = 1;
+});
+marker.addEventListener("markerLost", function (evt) {
+markerFound = 0;
+});
+fullbutton.addEventListener("click", function (evt) {
+                if (fullscreen == 0) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.mozRequestFullScreen) {
+                        /* Firefox */
+                        elem.mozRequestFullScreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        /* Chrome, Safari and Opera */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) {
+                        /* IE/Edge */
+                        elem.msRequestFullscreen();
+                    }
+                    fullbutton.setAttribute("src", "../exit_fullscreen.png");
+                    fullscreen = 1;
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                    fullbutton.setAttribute("src", "../fullscreen.png");
+                    fullscreen = 0;
+                }
 
-<body style="margin : 0px; overflow: hidden;">
-  <!-- minimal loader shown until image descriptors are loaded. Loading may take a while according to the device computational power -->
-  <div class="arjs-loader">
-    <div>Loading, please wait...</div>
-  </div>
+            });
+},
+tick: function (totalTime, deltaTime) {
+var dTime = deltaTime / 1000;
 
-  <!-- a-frame scene -->
-  <a-scene
-    vr-mode-ui="enabled: false;"
-    renderer="logarithmicDepthBuffer: true;"
-    embedded
-    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
-  >
-    <!-- a-nft is the anchor that defines an Image Tracking entity -->
-    <!-- on 'url' use the path to the Image Descriptors created before. -->
-    <!-- the path should end with the name without the extension e.g. if file is 'pinball.fset' the path should end with 'pinball' -->
-    <a-assets>
-      <img id="my-image" src="./images/clique.png">
-    </a-assets>
-    <a-nft
-      type="nft"
-      url="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/kaueemanuel/exp-ar/master/image-trex/trex/trex"
-      smooth="true"
-      smoothCount="10"
-      smoothTolerance=".01"
-      smoothThreshold="5"
-    >
-        <!-- as a child of the a-nft entity, you can define the content to show. here's a GLTF model entity -->
-        <!-- <a-entity
-            gltf-model="./model/scene.gltf"
-            scale="5 5 5"
-            position="0 0 0"
+if (markerFound == 1) {
+}
 
-        >
-        </a-entity> -->
+function bezierEvaluate(p0, p1, p2, p3, t) {
+                var u = (1 - t);
+                var uu = u * u;
+                var uuu = u * u * u;
+                var tt = t * t;
+                var ttt = t * t * t;
+                //B(t) = (1-t)^3*P0 + 3*(1-t)^2*t*P1 + 3*(1-t)*t^2*P2 + t^3*P3 , 0 < t < 1
+                return (uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3);
 
-      <!-- Using the asset management system. -->
-    <a-image src="#my-image"
-    rotation="-90 0 0"
-    position='300 50 -550'
-    scale="0.5 0.5 0.5"
-    width='500'
-    height='175'
-    ></a-image>      
-      
+            }
+           function bezierPath(p0, p1, p2, p3, t) {
+                return new THREE.Vector3(
+                    bezierEvaluate(p0.x, p1.x, p2.x, p3.x, t),
+                    bezierEvaluate(p0.y, p1.y, p2.y, p3.y, t),
+                    bezierEvaluate(p0.z, p1.z, p2.z, p3.z, t)
+                );
+            }
 
-    </a-nft>
-    
-    <!-- static camera that moves according to the device movemenents -->
-    <a-entity camera></a-entity>
-  </a-scene>
+        }
+});
+</script>
+<!-- END: Unity Compiled Events -->
+
+<!-- BEGIN: Middle HTML -->
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+<div style='position: absolute; bottom: 5px; left: 30px; width:100%; text-align: right; z-index: 1;'>
+        <input type="image" id="fullscreen" src="../fullscreen.png" style='position: absolute; bottom: 0px; right: 35px;'>
+        </input>
+    </div>
+<!-- <a-scene embedded arjs='debugUIEnabled: false; sourceType: video; sourceUrl:../../data/videos/headtracking.mp4;'> -->
+    <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false'>
+    <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable; useWorldCoordinates: true;"></a-entity>
+<!-- END: Middle HTML -->
+
+<!-- BEGIN: Unity Compiled Assets -->
+<a-assets>
+</a-assets>
+<!-- END: Unity Compiled Assets -->
+<!-- BEGIN: Add Image Target (marker) -->
+<a-marker id="marker" preset="hiro" emitevents="true" button>
+<!-- END: Add Image Target (marker) -->
+
+<!-- BEGIN: Unity Compiled Objects -->
+<a-box src="" id="Cube_0" class="intersectable" width="0,1" height="0,1" depth="0,1" position="0 0,039 0" rotation="0 0 0" color="#FFFFFF" transparent=False
+></a-box>
+<!-- END: Unity Compiled Objects -->
+
+<!-- BEGIN: Bottom HTML -->
+</a-marker>
+        <a-entity camera></a-entity>
+        </a-scene>
 </body>
+</html><!-- END: Bottom HTML -->
