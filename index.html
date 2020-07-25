@@ -91,7 +91,7 @@ function bezierEvaluate(p0, p1, p2, p3, t) {
         </input>
     </div>
 <!-- <a-scene embedded arjs='debugUIEnabled: false; sourceType: video; sourceUrl:../../data/videos/headtracking.mp4;'> -->
-    <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false'>
+    <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false' renderer="precision: low; antialias: true">
     <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable; useWorldCoordinates: true;"></a-entity>
 <!-- END: Middle HTML -->
 
@@ -108,7 +108,7 @@ function bezierEvaluate(p0, p1, p2, p3, t) {
 ></a-box>
 <a-sphere src="" id="Sphere_1" class="intersectable" radius="0.05" position="0.238 0.089 0.138" rotation="0 0 0" scale="1 1 1" color="#FFFFFF" transparent=False
 ></a-sphere>
-<a-plane src="textures/trex.png" id="Plane_2" class="intersectable" width="1" height="1" position="0 0.725 0" scale="1 1 1" rotation="-90 0 0" color="#FFFFFF" transparent=False
+<a-plane src="textures/trex.png" id="Plane_2" class="intersectable" width="1" height="1" position="-8.28 0.58 -9" scale="1 1 1" rotation="-90 0 0" color="#FFFFFF" transparent=False
 ></a-plane>
 <!-- END: Unity Compiled Objects -->
 
